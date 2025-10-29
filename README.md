@@ -55,7 +55,9 @@ npm start
 Student fills out a form with their name, email, and course.
 
 The data is sent to the Express backend API.
-
+Admin can view stored student records via API or admin dashboard.
 Backend stores the data in MongoDB Atlas.
 
-Admin can view stored student records via API or admin dashboard.
+
+
+

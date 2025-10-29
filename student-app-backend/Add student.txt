@@ -1,0 +1,199 @@
+// Add student
+app.post("/api/students", async (req, res) => {
+  try {
+    const student = new Student(req.body);
+    await student.save();
+    res.status(201).json({ message: "Student added!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to submit" });
+  }
+});
+
+
+
+----
+const express = require("express");
+const cors = require("cors");
+const fs = require("fs");
+require("dotenv").config();
+const mongoose = require("mongoose");
+const path = require("path");
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// ----------------- MONGODB CONNECTION -----------------
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.log("MongoDB connection error:", err));
+
+// ----------------- STUDENT MODEL -----------------
+const studentSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  course: String,
+});
+
+const Student = mongoose.model("Student", studentSchema);
+
+// ----------------- API ROUTES -----------------
+
+// Add student
+app.post('/students', async (req, res) => {
+    const { name, age, grade } = req.body;
+    // Validate input
+    if (!name || !age || !grade) {
+        return res.status(400).send("All fields are required");
+    }
+    // Save to DB
+    const student = new Student({ name, age, grade });
+    await student.save();
+    res.send("Student added successfully");
+});
+
+
+// Get all students
+app.get("/api/students", async (req, res) => {
+  try {
+    const students = await Student.find();
+    res.json(students);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch students" });
+  }
+});
+
+// ----------------- SERVE FRONTEND -----------------
+app.use(express.static(path.join(__dirname, "build")));
+
+app.get(/.*/, (req, res) => {
+  const indexPath = path.join(__dirname, "build", "index.html");
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).send("Page not found");
+  }
+});
+
+// ----------------- START SERVER -----------------
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+
+
+css stud
+
+/* Body & container */
+body, html, #root {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  min-height: 100vh;
+}
+
+.student-container {
+  max-width: 500px;
+  margin: 50px auto;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+/* Admin button in corner */
+.admin-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 10px 18px;
+  background: #1e3c72;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.admin-btn:hover {
+  background: #16325c;
+  transform: translateY(-2px);
+}
+
+/* Heading */
+.student-container h1 {
+  text-align: center;
+  color: #1e3c72;
+  margin-bottom: 25px;
+}
+
+/* Form styling */
+.student-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.student-form input,
+.student-form select {
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  outline: none;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+.student-form input:focus,
+.student-form select:focus {
+  border-color: #1e3c72;
+  box-shadow: 0 0 6px rgba(30,60,114,0.4);
+}
+
+/* Submit button */
+.student-form button {
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: #1e3c72;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.student-form button:hover {
+  background: #16325c;
+  transform: translateY(-2px);
+}
+
+/* Error & success messages */
+.error {
+  color: #e74c3c;
+  font-size: 14px;
+  text-align: center;
+}
+
+.success {
+  color: #2ecc71;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .student-container {
+    margin: 20px;
+    padding: 20px;
+  }
+}

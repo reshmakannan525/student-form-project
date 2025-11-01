@@ -27,7 +27,7 @@ student-form-project/
 
 ⚡ Installation & Setup
 1️⃣ Clone the repository
-git clone https://github.com/reshmakannan525/student-form-project.git
+git clone 
 cd student-form-project
 
 2️⃣ Setup Backend
